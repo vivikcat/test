@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>seajs</title>
+    <script type='text/javascript' src='static/perf/loaddash.js'></script>
+    <script type='text/javascript' src='static/perf/platform.js'></script>
+    <script type='text/javascript' src='static/perf/benchmark.js'></script>
+    <script type='text/javascript' src='static/lib/jquery.min.js'></script>
+    <script type='text/javascript' src='static/lib/sea.min.js'></script>
+</head>
+<body>
+
+<input type="button" value="perf sea" onClick="perfSea()"/>
+<div id="log"></div>
+
+<script>
+
+
+    Benchmark.prototype.setup = function() {
+        function id(id) {
+            return document.getElementById(id);
+        }
+    };
+
+
+    var suite = new Benchmark.Suite;
+
+
+    var log = $('#log');
+
+    seajs.config({
+        base: '/static/components/'
+    });
+
+
+
+    function perfSea() {
+
+        seajs.config({
+            base: '/static/components/'
+        });
+
+        suite
+                .add('seajs  2.case ', function() {
+
+                    seajs.use('mod', function(m){
+                    })
+
+                })
+                .add('seajs  3.case ', function() {
+
+                    seajs.use('foo', function(m){
+                    })
+
+                })
+                .add('seajs 1.case ', function() {
+
+                    seajs.use('main', function(m){
+                    })
+
+                })
+                // add listeners
+                .on('cycle', function(event) {
+                    log.append(String(event.target)).append('<br>');
+                })
+                .on('complete', function() {//.pluck('name')
+                    var f = this.filter('fastest');
+                    log.append('Fastest is ' + f[0]);
+                })
+                // run async
+                .run({ 'async': true });
+    }
+
+</script>
+</body>
+</html>

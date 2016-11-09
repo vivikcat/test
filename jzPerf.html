@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type='text/javascript' src='static/lib/jquery.min.js'></script>
+    <script type='text/javascript' src='static/lib/zepto.min.js'></script>
+    <script type='text/javascript' src='static/perf/loaddash.js'></script>
+    <script type='text/javascript' src='static/perf/platform.js'></script>
+    <script type='text/javascript' src='static/perf/benchmark.js'></script>
+</head>
+<body>
+
+<div id="rsvp" class="view" data-view-title="RSVPs">
+    <div class="content"></div>
+</div>
+<div id="chapter_004" class="view" data-view-title="Splendid Corgi Consortium">
+    <div class="content"></div>
+</div>
+
+<div id="log"></div>
+
+<script>
+
+    Benchmark.prototype.setup = function() {
+
+
+        function id(id) {
+            return document.getElementById(id);
+        }
+
+
+    };
+
+
+    var suite = new Benchmark.Suite;
+
+    var jq = function(sel) {
+        return jQuery(sel);
+    }
+    var zp = function(sel) {
+        return Zepto(sel);
+    }
+    var jqbind = function (j, event, fn) {
+        j.on(event, fn).off(event, fn)
+    };
+    var zpbind = function (z, event, fn) {
+        z.on(event, fn).off(event, fn)
+    };
+
+    var q = jq('#rsvp');
+    var z = zp('#rsvp');
+    var log = $('#log');
+    var fn = function(){};
+
+    // 添加测试
+    suite
+            .add('jquery selector id', function() {
+                jq('#chapter_004');
+            })
+            .add('zepto selector id', function() {
+                zp('#chapter_004');
+            })
+            .add('jquery selector class', function() {
+                jq('.content:first');
+            })
+            .add('zepto selector class', function() {
+                zp('.content:first');
+            })
+            .add('jquery selector elem', function() {
+                jq('div:first');
+            })
+            .add('zepto selector elem', function() {
+                zp('div:first');
+            })
+
+            // bind event
+            .add('jquery bind event', function() {
+                jqbind(q, 'click', fn);
+            })
+            .add('zepto bind event', function() {
+                zpbind(z, 'click', fn);
+            })
+
+            // fx
+            .add('jquery fx', function() {
+                q.fadeIn();
+                q.fadeOut();
+            })
+            .add('zepto fx', function() {
+                z.fadeIn();
+                z.fadeOut();
+            })
+
+            // mount prop
+            .add('jquery mount prop', function() {
+                q.prop('class', '.content');
+                q.removeProp('class');
+            })
+            .add('zepto mount prop', function() {
+                z.prop('class', '.content');
+                z.removeProp('class');
+            })
+            // add listeners
+            .on('cycle', function(event) {
+                log.append(String(event.target)).append('<br>');
+            })
+            .on('complete', function() {//.pluck('name')
+                var f = this.filter('fastest');
+                log.append('Fastest is ' + f[0]);
+            })
+            // run async
+            .run({ 'async': true });
+
+</script>
+</body>
+</html>

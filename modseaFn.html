@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>mod</title>
+    <style></style>
+</head>
+<body>
+<script type='text/javascript' src='static/lib/sea.min.js'></script>
+
+
+<input type="button" value="load main" onClick="loadMain()"/>
+<input type="button" value="load cycle" onClick="loadCycle()"/>
+
+
+
+<script type='text/javascript'>
+
+    seajs.config({
+        base: '/static/components/'
+    });
+
+    function loadMain() {
+        seajs.use(['main'], function(a){
+        })
+    }
+
+    function loadCycle() {
+        seajs.use(['a'], function(a){
+        })
+    }
+
+</script>
+</body>
+</html>
